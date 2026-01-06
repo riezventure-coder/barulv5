@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cari ID PORT & VLAN</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h2>Cari ID PORT & VLAN</h2>
+
+    <input id="ip" placeholder="IP Address" />
+    <input id="slot" placeholder="Slot" />
+    <input id="port" placeholder="Port" />
+
+    <button id="search-btn">Cari</button>
+
+    <table id="result" border="2">
+      <thead>
+        <tr>
+          <th>IP</th>
+          <th>SLOT</th>
+          <th>PORT</th>
+          <th>VLAN</th>
+          <th>ID_PORT</th>
+        </tr>
+      </thead>
+      <tbody id="result-body"></tbody>
+    </table>
+
+    <p id="empty-msg"></p>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
