@@ -51,6 +51,7 @@ const renderTable = (data) => {
             <td>${data.VLAN}</td>
             <td>${data.ID_PORT}</td>
             <td>${data.GPON}</td>
+            <td>${data.VENDOR}</td>
         `;
     tbody.appendChild(row);
   });
