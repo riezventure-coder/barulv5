@@ -3,14 +3,34 @@ body {
   padding: 20px;
 }
 
+.input-container {
+    display: flex;       /* Mengaktifkan mode flexbox */
+    gap: 10px;          /* Memberikan jarak antar input */
+    margin-bottom: 20px; /* Jarak antara input dengan tabel */
+    align-items: center; /* Menyeimbangkan posisi vertikal jika tinggi berbeda */
+}
+
 input {
-  display: block;
-  margin: 6px 0;
-  padding: 6px;
+    padding: 8px;       /* Membuat input lebih nyaman dilihat */
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 button {
   padding: 6px 12px;
+}
+
+#search-btn {
+    padding: 8px 15px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+#search-btn:hover {
+    background-color: #0056b3;
 }
 
 #result {
