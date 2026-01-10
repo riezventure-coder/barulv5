@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="id">
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8" />
-    <title>Cari ID PORT & VLAN</title>
+    <title>ID PORT VLAN ALTER</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h2>Cari ID PORT & VLAN</h2>
+    <h2>Search ID PORT & VLAN</h2>
 
 	<div class="input-container">
     		 <input id="ip" placeholder="IP" />
@@ -28,6 +29,43 @@
       </thead>
       <tbody id="result-body"></tbody>
     </table>
+	
+
+	   <h2>Alter Prov</h2>
+        <div class="container">
+          <table id="dataTable">
+            <thead>
+              <tr>
+                <th>RESOURCE ID</th>
+                <th>SERVICE NAME</th>
+                <th>TARGET ID</th>
+                <th>CONFIG ITEM NAME</th>
+                <th style="width: 60px; text-align: center;">DELETE</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-label="RESOURCE ID"><input type="text" class="res-id" placeholder="ID"></td>
+                    <td data-label="SERVICE NAME"><input type="text" class="ser-name" placeholder="Service"></td>
+                    <td data-label="TARGET ID"><input type="text" class="tar-id" placeholder="Target"></td>
+                    <td data-label="CONFIG ITEM">
+                        <select class="cfg-name">
+                            <option value="Service_Port">Service_Port</option>
+                            <option value="S-Vlan">S-Vlan</option>
+                            <option value="Subscriber_Terminal_Port">Subscriber_Terminal_Port</option>
+                            <option value="Service_Trail">Service_Trail</option>
+                        </select>
+                    </td>
+                    <td data-label="ACT" style="text-align: center;">
+                        <button class="btn-remove" onclick="removeRow(this)">✕ Hapus</button>
+                    </td>
+                </tr>
+            </tbody>
+          </table>
+          <div class="btn-group">
+              <button class="btn-add" onclick="addRow()">+ Add</button>
+              <button class="btn-download" onclick="downloadCSV()">Export CSV</button>
+          </div>
 
     <p id="empty-msg"></p>
 
