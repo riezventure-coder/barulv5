@@ -38,7 +38,25 @@
                         </tbody>
                 </table>
             </div>
-        </section>
+        </section>		
+		
+		<section class="card">
+        <div class="card-header">
+            <h2>Service ID Extractor</h2>
+            <p>Pisahkan data INTERNET, VOICE, dan IPTV dengan mudah.</p>
+        </div>
+        
+        <div class="input-section">
+            <label for="inputText">Tempel teks Log dari bima di sini:</label>
+            <textarea id="inputText" placeholder="Contoh: Service ID is 3-48WW9WMJ_..."></textarea>
+            <button id="btnExtract">Ekstrak Data</button>
+        </div>
+
+        <div id="resultArea" class="result-section hidden">
+            <h3>Hasil Pemisahan:</h3>
+            <div id="outputList"></div>
+        </div>
+	</section>
 
         <section class="card">
             <div class="card-header">

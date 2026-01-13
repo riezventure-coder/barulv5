@@ -86,6 +86,47 @@ const renderTable = (filteredData) => {
     });
 };
 
+
+//-- Fungsi untuk Mengambil Service dari BIMA
+
+document.getElementById('btnExtract').addEventListener('click', function() {
+    const input = document.getElementById('inputText').value;
+    const outputList = document.getElementById('outputList');
+    const resultArea = document.getElementById('resultArea');
+
+    // 1. Cari teks setelah kata "Service ID is "
+    const keyword = "Service ID is ";
+    let targetText = "";
+
+    if (input.includes(keyword)) {
+        targetText = input.split(keyword)[1];
+    } else {
+        targetText = input; // Jika tidak ada keyword, gunakan semua input
+    }
+
+    // 2. Bersihkan teks dan pecah berdasarkan koma
+    // Menghapus spasi di awal/akhir dan membagi berdasarkan karakter koma
+    const services = targetText.trim().split(',');
+
+    // 3. Render hasil ke layar
+    outputList.innerHTML = ""; // Bersihkan hasil sebelumnya
+
+    if (services.length > 0 && services[0] !== "") {
+        resultArea.classList.remove('hidden');
+        
+        services.forEach(item => {
+            if (item.trim() !== "") {
+                const div = document.createElement('div');
+                div.className = 'service-card';
+                div.textContent = item.trim();
+                outputList.appendChild(div);
+            }
+        });
+    } else {
+        alert("Mohon masukkan data yang valid.");
+    }
+});
+
 // --- Fungsi untuk Bagian Alter Prov ---
 // (Fungsi addRow, removeRow, downloadCSV tetap sama namun pastikan ID elemen ada di HTML)
 
