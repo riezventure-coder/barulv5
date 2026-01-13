@@ -1,101 +1,75 @@
-// URL Google Sheet yang sudah di-publish sebagai CSV (Tab RUMUS)
-const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_LsggdPOwSms8SO0wuSEiMAIdyMjYlt0G9z71aZa2gy0ngATMJiakSa_a7cygOFa1WhCinsfHk3AQ/pub?gid=1252451747&single=true&output=csv";
+let dataArray = [];
 
-let data = [];
+Papa.parse("data.csv", {
+  download: true,
+  delimiter: ",",
+  header: true,
+  skinEmptyLines: true,
+  complete: function (results) {
+    data = results.data;
+    const searchBtn = document.getElementById("search-btn");
+    searchBtn.addEventListener("click", () => {
+      const IP_ADDRESS = document.getElementById("ip").value;
+      const SLOT = document.getElementById("slot").value;
+      const PORT = document.getElementById("port").value;
 
-// Fungsi untuk mencatat log ke konsol browser (F12)
-function logStatus(message, isError = false) {
-    console.log(isError ? "❌ ERROR: " : "ℹ️ LOG: ", message);
-}
-
-// Fungsi inisialisasi untuk ambil data dari Google Sheets
-function init() {
-    logStatus("Memulai pengambilan data dari Google Sheets...");
-    
-    Papa.parse(sheetUrl, {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
-        complete: function (results) {
-            data = results.data;
-            if (data.length > 0) {
-                logStatus("Data Berhasil Dimuat! Jumlah baris: " + data.length);
-                // Menampilkan nama kolom asli dari Sheet untuk memastikan case-sensitive
-                logStatus("Kolom yang terdeteksi: " + Object.keys(data[0]).join(", "));
-            } else {
-                logStatus("Data kosong atau format salah.", true);
-            }
-        },
-        error: function(error) {
-            logStatus("Gagal memproses CSV: " + error.message, true);
-            alert("Gagal memuat data. Pastikan Google Sheet sudah di-publish ke Web sebagai CSV.");
-        }
-    });
-}
-
-// Event Listener untuk tombol cari
-document.getElementById("search-btn").addEventListener("click", () => {
-    // Ambil nilai input
-    const inputIP = document.getElementById("ip").value.trim();
-    const inputSlot = document.getElementById("slot").value.trim();
-    const inputPort = document.getElementById("port").value.trim();
-
-    if (!inputIP || !inputSlot || !inputPort) {
-        alert("Mohon isi semua field: IP, Slot, dan Port");
-        return;
-    }
-
-    // Filter data berdasarkan input
-    const filteredData = data.filter((item) => {
-        // PERBAIKAN: Pastikan nama properti (IP, SLOT, PORT) sesuai dengan header di Google Sheet
-        // Gunakan trim() pada data sheet juga untuk menghindari spasi tak terlihat
+      //Search VLAN & ID_PORT
+      const filteredData = data.filter((item) => {
         return (
-            String(item.IP || "").trim() === inputIP && 
-            String(item.SLOT || "").trim() === inputSlot && 
-            String(item.PORT || "").trim() === inputPort
+          item.IP === IP_ADDRESS && item.SLOT === SLOT && item.PORT === PORT
         );
-    });
+      });
 
-    renderTable(filteredData);
+      getData(filteredData);
+    });
+  },
 });
 
-const renderTable = (filteredData) => {
-    const tbody = document.getElementById("result-body");
-    const emptyMsg = document.getElementById("empty-msg");
-
-    tbody.innerHTML = "";
-    if (emptyMsg) emptyMsg.textContent = "";
-
-    if (filteredData.length === 0) {
-        if (emptyMsg) emptyMsg.textContent = "Tidak ada data yang ditemukan.";
-        return;
-    }
-
-    filteredData.forEach((item) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${item.IP || '-'}</td>
-            <td>${item.SLOT || '-'}</td>
-            <td>${item.PORT || '-'}</td>
-            <td>${item.VLAN || '-'}</td>
-            <td>${item.ID_PORT || '-'}</td>
-            <td>${item.GPON || '-'}</td>
-            <td>${item.VENDOR || '-'}</td>
-        `;
-        tbody.appendChild(row);
-    });
+const getData = (data) => {
+  dataArray.push(data);
+  renderTable(data);
 };
 
-// --- Fungsi untuk Bagian Alter Prov ---
-// (Fungsi addRow, removeRow, downloadCSV tetap sama namun pastikan ID elemen ada di HTML)
+const renderTable = (data) => {
+  const tbody = document.getElementById("result-body");
+  const emptyMsg = document.getElementById("empty-msg");
 
-window.addRow = function() {
+  tbody.innerHTML = "";
+  emptyMsg.textContent = "";
+
+  if (data.length === 0) {
+    emptyMsg.textContent = "Tidak ada data yang ditemukan.";
+    return;
+  }
+
+  data.forEach((data) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+            <td>${data.IP}</td>
+            <td>${data.SLOT}</td>
+            <td>${data.PORT}</td>
+            <td>${data.VLAN}</td>
+            <td>${data.ID_PORT}</td>
+            <td>${data.GPON}</td>
+            <td>${data.VENDOR}</td>
+        `;
+    tbody.appendChild(row);
+  });
+};
+
+
+
+/**
+ * Fungsi untuk menambah baris baru ke tabel
+ */
+function addRow() {
     const tableBody = document.querySelector("#dataTable tbody");
     const newRow = document.createElement("tr");
+
     newRow.innerHTML = `
-        <td><input type="text" class="res-id" placeholder="ID"></td>
-        <td><input type="text" class="ser-name" placeholder="Service"></td>
-        <td><input type="text" class="tar-id" placeholder="Target"></td>
+        <td><input type="text" class="res-id" placeholder="ID..."></td>
+        <td><input type="text" class="ser-name" placeholder="Nama Service..."></td>
+        <td><input type="text" class="tar-id" placeholder="ID Target..."></td>
         <td>
             <select class="cfg-name">
                 <option value="Service_Port">Service_Port</option>
@@ -104,47 +78,69 @@ window.addRow = function() {
                 <option value="Service_Trail">Service_Trail</option>
             </select>
         </td>
-        <td style="text-align: center;"><button class="btn-remove" onclick="removeRow(this)">✕</button></td>
+        <td><button class="btn-remove" onclick="removeRow(this)">✕</button></td>
     `;
+    
     tableBody.appendChild(newRow);
-};
+}
 
-window.removeRow = function(btn) {
+/**
+ * Fungsi untuk menghapus baris tertentu
+ */
+function removeRow(btn) {
+    const row = btn.closest("tr");
     const tbody = document.querySelector("#dataTable tbody");
+    
     if (tbody.rows.length > 1) {
-        btn.closest("tr").remove();
+        row.remove();
     } else {
-        alert("Minimal harus ada satu baris.");
+        alert("Gagal menghapus. Harus ada minimal satu baris input.");
     }
-};
+}
 
-window.downloadCSV = function() {
+/**
+ * Fungsi untuk mengkonversi data tabel ke format CSV dan mendownloadnya
+ */
+function downloadCSV() {
     const rows = document.querySelectorAll("#dataTable tr");
     let csvContent = "";
+
     rows.forEach((row, rowIndex) => {
         let rowData = [];
         const cols = row.querySelectorAll("th, td");
-        // Loop kolom kecuali kolom terakhir (tombol hapus)
+
+        // Loop setiap kolom kecuali kolom terakhir (kolom Aksi)
         for (let i = 0; i < cols.length - 1; i++) {
             let cellValue = "";
+
             if (rowIndex === 0) {
+                // Ambil teks dari header (thead)
                 cellValue = cols[i].innerText;
             } else {
+                // Ambil value dari input atau select (tbody)
                 const inputElement = cols[i].querySelector("input, select");
                 cellValue = inputElement ? inputElement.value : "";
             }
-            rowData.push(`"${cellValue.replace(/"/g, '""')}"`);
+
+            // Bersihkan data dari tanda kutip ganda dan bungkus dengan kutip untuk format CSV aman
+            cellValue = cellValue.replace(/"/g, '""');
+            rowData.push(`"${cellValue}"`);
         }
+        
         csvContent += rowData.join(",") + "\n";
     });
 
+    // Proses pembuatan file dan download
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
+    
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
     link.setAttribute("href", url);
     link.setAttribute("download", `Alter Service Config Item.csv`);
+    link.style.visibility = "hidden";
+    
+    document.body.appendChild(link);
     link.click();
-};
-
-// Jalankan fungsi init saat halaman dimuat
-init();
+    document.body.removeChild(link);
+}

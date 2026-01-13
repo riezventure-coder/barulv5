@@ -1,125 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+<html lang="id">
+  <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data IP VLAN ALTER</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-    </style>
-</head>
-<body class="p-4 md:p-8">
+    <meta charset="UTF-8" />
+    <title>ID PORT VLAN ALTER</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h2>Search ID PORT & VLAN</h2>
 
-    <div class="max-w-6xl mx-auto">
-        <header class="mb-8">
-            <h1 class="text-3xl font-bold text-slate-800">Search</h1>
-            <p class="text-slate-500 text-sm">Data Resoucre service UIM.</p>
-        </header>
+	<div class="input-container">
+    		 <input id="ip" placeholder="IP" />
+   		 <input id="slot" placeholder="Slot" />
+   		 <input id="port" placeholder="Port" />
+    		 <button id="search-btn">Cari</button>
+	</div>
+    <table id="result" border="2">
+      <thead>
+        <tr>
+          <th>IP</th>
+          <th>SLOT</th>
+          <th>PORT</th>
+          <th>VLAN</th>
+          <th>ID_PORT</th>
+          <th>GPON</th>
+          <th>VENDOR</th>
+        </tr>
+      </thead>
+      <tbody id="result-body"></tbody>
+    </table>
+	
 
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-            <div class="p-6 border-b border-slate-100 bg-slate-50/50">
-                <h2 class="font-semibold text-slate-700 flex items-center">
-                    <i class="fa-solid fa-magnifying-glass mr-2 text-blue-500"></i> Lookup Data Google Sheet
-                </h2>
-            </div>
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-500 uppercase mb-1">IP Address</label>
-                        <input type="text" id="ip" placeholder="10.xx.xx.xx" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-500 uppercase mb-1">Slot</label>
-                        <input type="text" id="slot" placeholder="0" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-500 uppercase mb-1">Port</label>
-                        <input type="text" id="port" placeholder="0" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
-                    </div>
-                </div>
-                <button id="search-btn" class="w-full md:w-auto px-8 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center">
-                    Cari Data
-                </button>
+	   <h2>Alter Prov</h2>
+        <div class="container">
+          <table id="dataTable">
+            <thead>
+              <tr>
+                <th>RESOURCE_ID</th>
+                <th>SERVICE_NAME</th>
+                <th>TARGET_ID</th>
+                <th>CONFIG_ITEM_NAME</th>
+                <th style="width: 60px; text-align: center;">DELETE</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-label="RESOURCE_ID"><input type="text" class="res-id" placeholder="ID"></td>
+                    <td data-label="SERVICE_NAME"><input type="text" class="ser-name" placeholder="Service"></td>
+                    <td data-label="TARGET_ID"><input type="text" class="tar-id" placeholder="Target"></td>
+                    <td data-label="CONFIG_ITEM">
+                        <select class="cfg-name">
+                            <option value="Service_Port">Service_Port</option>
+                            <option value="S-Vlan">S-Vlan</option>
+                            <option value="Subscriber_Terminal_Port">Subscriber_Terminal_Port</option>
+                            <option value="Service_Trail">Service_Trail</option>
+                        </select>
+                    </td>
+                    <td data-label="ACT" style="text-align: center;">
+                        <button class="btn-remove" onclick="removeRow(this)">✕ Hapus</button>
+                    </td>
+                </tr>
+            </tbody>
+          </table>
+          <div class="btn-group">
+              <button class="btn-add" onclick="addRow()">+ Add</button>
+              <button class="btn-download" onclick="downloadCSV()">Export CSV</button>
+          </div>
 
-                <div class="mt-8 overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 text-slate-600 uppercase text-[11px] font-bold tracking-wider">
-                            <tr>
-                                <th class="px-4 py-3 border-b">IP</th>
-                                <th class="px-4 py-3 border-b">Slot</th>
-                                <th class="px-4 py-3 border-b">Port</th>
-                                <th class="px-4 py-3 border-b">VLAN</th>
-                                <th class="px-4 py-3 border-b">ID Port</th>
-                                <th class="px-4 py-3 border-b">GPON</th>
-                                <th class="px-4 py-3 border-b">Vendor</th>
-                            </tr>
-                        </thead>
-                        <tbody id="result-body" class="divide-y divide-slate-100">
-                            </tbody>
-                    </table>
-                    <div id="empty-msg" class="text-center py-8 text-slate-400 italic text-sm"></div>
-                </div>
-            </div>
-        </div>
+    <p id="empty-msg"></p>
 
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-wrap justify-between items-center gap-4">
-                <h2 class="font-semibold text-slate-700 flex items-center">
-                    <i class="fa-solid fa-file-csv mr-2 text-emerald-500"></i> Alter Provisioning
-                </h2>
-                <div class="flex gap-2">
-                    <button onclick="addRow()" class="px-4 py-2 bg-slate-800 hover:bg-black text-white text-xs font-semibold rounded-lg transition-all flex items-center">
-                        <i class="fa-solid fa-plus mr-1.5"></i> Tambah Baris
-                    </button>
-                    <button onclick="downloadCSV()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg transition-all flex items-center">
-                        <i class="fa-solid fa-download mr-1.5"></i> Download CSV
-                    </button>
-                </div>
-            </div>
-            <div class="p-6">
-                <div class="overflow-x-auto">
-                    <table id="dataTable" class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 text-slate-600 font-bold">
-                            <tr>
-                                <th class="px-4 py-3 border-b">RESOURCE_ID</th>
-                                <th class="px-4 py-3 border-b">SERVICE_NAME</th>
-                                <th class="px-4 py-3 border-b">TARGET_ID</th>
-                                <th class="px-4 py-3 border-b">CONFIG_ITEM</th>
-                                <th class="px-4 py-3 border-b text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <tr>
-                                <td class="p-2"><input type="text" class="res-id w-full px-3 py-1.5 border border-slate-200 rounded focus:ring-1 focus:ring-blue-500 outline-none" placeholder="ID"></td>
-                                <td class="p-2"><input type="text" class="ser-name w-full px-3 py-1.5 border border-slate-200 rounded focus:ring-1 focus:ring-blue-500 outline-none" placeholder="Service"></td>
-                                <td class="p-2"><input type="text" class="tar-id w-full px-3 py-1.5 border border-slate-200 rounded focus:ring-1 focus:ring-blue-500 outline-none" placeholder="Target"></td>
-                                <td class="p-2">
-                                    <select class="cfg-name w-full px-3 py-1.5 border border-slate-200 rounded focus:ring-1 focus:ring-blue-500 outline-none bg-white">
-                                        <option value="Service_Port">Service_Port</option>
-                                        <option value="S-Vlan">S-Vlan</option>
-                                        <option value="Subscriber_Terminal_Port">Subscriber_Terminal_Port</option>
-                                        <option value="Service_Trail">Service_Trail</option>
-                                    </select>
-                                </td>
-                                <td class="p-2 text-center">
-                                    <button class="text-red-400 hover:text-red-600 transition-colors" onclick="removeRow(this)"><i class="fa-solid fa-trash-can"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        
-        <footer class="mt-8 text-center text-slate-400 text-xs">
-            &copy; 2025 Provisioning System - Managed riezventure-dartz801-mauladanacoffe
-        </footer>
-    </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="index.js"></script>
-</body>
+  </body>
 </html>
+
