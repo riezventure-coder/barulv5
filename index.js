@@ -94,38 +94,40 @@ document.getElementById('btnExtract').addEventListener('click', function() {
     const outputList = document.getElementById('outputList');
     const resultArea = document.getElementById('resultArea');
 
-    // 1. Cari teks setelah kata "Service ID is "
     const keyword = "Service ID is ";
-    let targetText = "";
-
-    if (input.includes(keyword)) {
-        targetText = input.split(keyword)[1];
-    } else {
-        targetText = input; // Jika tidak ada keyword, gunakan semua input
-    }
-
-    // 2. Bersihkan teks dan pecah berdasarkan koma
-    // Menghapus spasi di awal/akhir dan membagi berdasarkan karakter koma
+    let targetText = input.includes(keyword) ? input.split(keyword)[1] : input;
     const services = targetText.trim().split(',');
 
-    // 3. Render hasil ke layar
-    outputList.innerHTML = ""; // Bersihkan hasil sebelumnya
+    outputList.innerHTML = ""; 
 
     if (services.length > 0 && services[0] !== "") {
         resultArea.classList.remove('hidden');
-        
         services.forEach(item => {
-            if (item.trim() !== "") {
+            const cleanItem = item.trim();
+            if (cleanItem !== "") {
                 const div = document.createElement('div');
                 div.className = 'service-card';
-                div.textContent = item.trim();
+                div.innerHTML = `
+                    <span>${cleanItem}</span>
+                    <button class="copy-btn" onclick="copyText('${cleanItem}')" title="Salin">
+                        <i data-lucide="copy" style="width:16px; height:16px"></i>
+                    </button>
+                `;
                 outputList.appendChild(div);
             }
         });
+        lucide.createIcons(); // Re-render icon lucide
     } else {
         alert("Mohon masukkan data yang valid.");
     }
 });
+
+// Fungsi Global untuk Copy
+window.copyText = function(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert("Berhasil disalin: " + text);
+    });
+};
 
 // --- Fungsi untuk Bagian Alter Prov ---
 // (Fungsi addRow, removeRow, downloadCSV tetap sama namun pastikan ID elemen ada di HTML)
@@ -186,6 +188,38 @@ window.downloadCSV = function() {
     link.setAttribute("download", `Alter Service Config Item.csv`);
     link.click();
 };
+
+// --- Fitur Dark Mode ---
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
+const body = document.body;
+
+// Cek simpanan tema di browser
+const currentTheme = localStorage.getItem('theme') || 'light';
+if (currentTheme === 'dark') {
+    body.setAttribute('data-theme', 'dark');
+    updateIcon(true);
+}
+
+themeToggle.addEventListener('click', () => {
+    const isDark = body.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+        body.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        updateIcon(false);
+    } else {
+        body.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        updateIcon(true);
+    }
+});
+
+function updateIcon(isDark) {
+    // Ubah icon Lucide secara dinamis
+    const iconName = isDark ? 'sun' : 'moon';
+    themeIcon.setAttribute('data-lucide', iconName);
+    lucide.createIcons(); 
+}
 
 // Jalankan fungsi init saat halaman dimuat
 init();
