@@ -1,76 +1,91 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
     <meta charset="UTF-8" />
-    <title>ID PORT VLAN ALTER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Inventory & Alter Prov</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <h2>Search ID PORT & VLAN</h2>
+</head>
+<body>
 
-	<div class="input-container">
-    		 <input id="ip" placeholder="IP" />
-   		 <input id="slot" placeholder="Slot" />
-   		 <input id="port" placeholder="Port" />
-    		 <button id="search-btn">Cari</button>
-	</div>
-    <table id="result" border="2">
-      <thead>
-        <tr>
-          <th>IP</th>
-          <th>SLOT</th>
-          <th>PORT</th>
-          <th>VLAN</th>
-          <th>ID_PORT</th>
-          <th>GPON</th>
-          <th>VENDOR</th>
-        </tr>
-      </thead>
-      <tbody id="result-body"></tbody>
-    </table>
-	
+    <div class="main-wrapper">
+        <section class="card">
+            <div class="card-header">
+                <h2><span>🔍</span> Search ID PORT & VLAN</h2>
+            </div>
+            <div class="input-container">
+                <input id="ip" type="text" placeholder="IP Address (e.g. 10.x.x.x)" />
+                <input id="slot" type="text" placeholder="Slot" />
+                <input id="port" type="text" placeholder="Port" />
+                <button id="search-btn">Cari Sekarang</button>
+            </div>
+            
+            <div class="table-responsive">
+                <table id="result">
+                    <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>SLOT</th>
+                            <th>PORT</th>
+                            <th>VLAN</th>
+                            <th>ID_PORT</th>
+                            <th>GPON</th>
+                            <th>VENDOR</th>
+                        </tr>
+                    </thead>
+                    <tbody id="result-body">
+                        </tbody>
+                </table>
+            </div>
+        </section>
 
-	   <h2>Alter Prov</h2>
-        <div class="container">
-          <table id="dataTable">
-            <thead>
-              <tr>
-                <th>RESOURCE_ID</th>
-                <th>SERVICE_NAME</th>
-                <th>TARGET_ID</th>
-                <th>CONFIG_ITEM_NAME</th>
-                <th style="width: 60px; text-align: center;">DELETE</th>
-              </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td data-label="RESOURCE_ID"><input type="text" class="res-id" placeholder="ID"></td>
-                    <td data-label="SERVICE_NAME"><input type="text" class="ser-name" placeholder="Service"></td>
-                    <td data-label="TARGET_ID"><input type="text" class="tar-id" placeholder="Target"></td>
-                    <td data-label="CONFIG_ITEM">
-                        <select class="cfg-name">
-                            <option value="Service_Port">Service_Port</option>
-                            <option value="S-Vlan">S-Vlan</option>
-                            <option value="Subscriber_Terminal_Port">Subscriber_Terminal_Port</option>
-                            <option value="Service_Trail">Service_Trail</option>
-                        </select>
-                    </td>
-                    <td data-label="ACT" style="text-align: center;">
-                        <button class="btn-remove" onclick="removeRow(this)">✕ Hapus</button>
-                    </td>
-                </tr>
-            </tbody>
-          </table>
-          <div class="btn-group">
-              <button class="btn-add" onclick="addRow()">+ Add</button>
-              <button class="btn-download" onclick="downloadCSV()">Export CSV</button>
-          </div>
+        <section class="card">
+            <div class="card-header">
+                <h2><span>⚙️</span> Alter Provisioning</h2>
+            </div>
+            
+            <div class="table-responsive">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>RESOURCE_ID</th>
+                            <th>SERVICE_NAME</th>
+                            <th>TARGET_ID</th>
+                            <th>CONFIG_ITEM_NAME</th>
+                            <th style="width: 50px; text-align: center;">AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="RESOURCE_ID"><input type="text" class="res-id" placeholder="ID"></td>
+                            <td data-label="SERVICE_NAME"><input type="text" class="ser-name" placeholder="Service Name"></td>
+                            <td data-label="TARGET_ID"><input type="text" class="tar-id" placeholder="Target"></td>
+                            <td data-label="CONFIG_ITEM">
+                                <select class="cfg-name">
+                                    <option value="Service_Port">Service_Port</option>
+                                    <option value="S-Vlan">S-Vlan</option>
+                                    <option value="Subscriber_Terminal_Port">Subscriber_Terminal_Port</option>
+                                    <option value="Service_Trail">Service_Trail</option>
+                                </select>
+                            </td>
+                            <td data-label="AKSI" style="text-align: center;">
+                                <button class="btn-remove" onclick="removeRow(this)" title="Hapus Baris">✕</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-    <p id="empty-msg"></p>
+            <div class="btn-group">
+                <button class="btn-add" onclick="addRow()">+ Tambah Baris</button>
+                <button class="btn-download" onclick="downloadCSV()">Export ke CSV</button>
+            </div>
+            <p id="empty-msg"></p>
+        </section>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="index.js"></script>
-  </body>
+</body>
 </html>
-
