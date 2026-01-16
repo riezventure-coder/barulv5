@@ -132,25 +132,6 @@ window.copyText = function(text) {
 // --- Fungsi untuk Bagian Alter Prov ---
 // (Fungsi addRow, removeRow, downloadCSV tetap sama namun pastikan ID elemen ada di HTML)
 
-window.addRow = function() {
-    const tableBody = document.querySelector("#dataTable tbody");
-    const newRow = document.createElement("tr");
-    newRow.innerHTML = `
-        <td><input type="text" class="res-id" placeholder="ID"></td>
-        <td><input type="text" class="ser-name" placeholder="Service"></td>
-        <td><input type="text" class="tar-id" placeholder="Target"></td>
-        <td>
-            <select class="cfg-name">
-                <option value="Service_Port">Service_Port</option>
-                <option value="S-Vlan">S-Vlan</option>
-                <option value="Subscriber_Terminal_Port">Subscriber_Terminal_Port</option>
-                <option value="Service_Trail">Service_Trail</option>
-            </select>
-        </td>
-        <td style="text-align: center;"><button class="btn-remove" onclick="removeRow(this)">✕</button></td>
-    `;
-    tableBody.appendChild(newRow);
-};
 
 window.removeRow = function(btn) {
     const tbody = document.querySelector("#dataTable tbody");
@@ -222,4 +203,5 @@ function updateIcon(isDark) {
 }
 
 // Jalankan fungsi init saat halaman dimuat
+
 init();
